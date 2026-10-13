@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Document Upload</title>
+</head>
+<body>
+
+    <h2>Upload Document</h2>
+
+    <input type="file" id="document">
+    <button onclick="uploadFile()">Upload</button>
+
+    <h3>File Content</h3>
+    <pre id="result"></pre>
+
+<script>
+async function uploadFile() {
+    let data = new FormData();
+    data.append("document", document.getElementById("document").files[0]);
+
+    let response = await fetch("/upload", {
+        method: "POST",
+        body: data
+    });
+
+    document.getElementById("result").textContent = await response.text();
+}
+</script>
+
+</body>
+</html>

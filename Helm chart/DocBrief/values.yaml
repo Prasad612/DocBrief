@@ -1,0 +1,126 @@
+# Default values for DocBrief.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+global:
+  GEMINI_KEY: ""
+
+replicaCount: 1
+
+image:
+  repository: myapp-test
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+rolloutNonce: ""
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Automatically mount a ServiceAccount's API credentials?
+  automount: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 5000
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations: {}
+  host: "comp-4946-1.nonprod.hclpnp.com"
+    # nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    # nginx.ingress.kubernetes.io/proxy-connect-timeout: "1800"
+    # nginx.ingress.kubernetes.io/proxy-read-timeout: "1800"
+    # nginx.ingress.kubernetes.io/proxy-set-headers: |
+    #   "Host" $host
+    #   X-Forwarded-For "$proxy_add_x_forwarded_for"
+    #   "X-Real-IP" $remote_addr
+    #   X-Forwarded-Proto "$scheme"
+    # nginx.ingress.kubernetes.io/proxy-send-timeout: "1800"
+    # nginx.ingress.kubernetes.io/send-timeout: "1800"
+    # nginx.ingress.kubernetes.io/proxy-pass-request-headers: "true"
+    # nginx.ingress.kubernetes.io/underscores-in-headers: "on"
+    # nginx.ingress.kubernetes.io/client-header-timeout: "3000"
+    # nginx.ingress.kubernetes.io/client-body-timeout: "3000"
+    # nginx.ingress.kubernetes.io/fastcgi-read-timeout: "3000"
+    # nginx.ingress.kubernetes.io/fastcgi-buffers: "8 128k"
+    # nginx.ingress.kubernetes.io/fastcgi-buffer-size: "128k"
+  # tls:
+  #   - secretName: chart-example-tls
+  #     hosts:
+  #       - rmmyclddl235161.nonprod.hclpnp.com
+
+resources:
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  limits:
+    cpu: 500m
+    memory: 1Gi
+  requests:
+    cpu: 250m
+    memory: 512Mi
+
+livenessProbe:
+  httpGet:
+    path: /
+    port: 5000
+  initialDelaySeconds: 45
+  periodSeconds: 10
+  timeoutSeconds: 25
+  
+readinessProbe:
+  httpGet:
+    path: /
+    port: 5000
+  initialDelaySeconds: 45
+  periodSeconds: 10
+  timeoutSeconds: 25
+
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
+
+# Additional volumes on the output Deployment definition.
+volumes: 
+  - name: myvolume
+    persistentVolumeClaim:
+      claimName: databrief-pvc
+
+# Additional volumeMounts on the output Deployment definition.
+volumeMounts:     
+  - name: myvolume
+    mountPath: /home/rhel/helm/Prasad/test-project
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
